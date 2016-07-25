@@ -1,0 +1,37 @@
+{
+  "name": "crypto-js",
+  "version": "3.1.12",
+  "description": "JavaScript implementations of standard and secure cryptographic algorithms",
+  "keywords": [
+    "cryptography",
+    "crypto",
+    "aes",
+    "sha",
+    "rsa",
+    "base64",
+    "hex",
+    "hmac",
+    "encode",
+    "decode"
+  ],
+  "main": [
+    "build/components/core.js",
+    "build/components/cipher-core.js",
+    "build/components/pad-zeropadding.js",
+    "build/components/aes.js",
+    "build/components/enc-base64.js",
+    "build/components/enc-utf16.js",
+    "build/components/mode-cfb.js"
+  ],
+  "authors": [
+    "Jeff Mott"
+  ],
+  "license": "New BSD License",
+  "homepage": "http://github.com/karolmajta/crypto-js.git",
+  "ignore": [
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

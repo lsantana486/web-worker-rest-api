@@ -12,19 +12,24 @@
         .provider("webWorkerConfig", function () {
             "use strict";
             
-            var WebWorkerConfig = ['$log','script',function($log,script){
+            var WebWorkerConfig = ['$log','script','timer',function($log,script,timer){
                $log.info("webWorkerConfig");
                this.script = script;
+               this.timer = timer;
             }];
             
             return {
                 $get:['$injector',function($injector) {
                     return $injector.instantiate(WebWorkerConfig, {
-                        script: this.script || "bower_components/web-worker-rest-api/worker.js"
+                        script: this.script || "../bower_components/web-worker-rest-api/worker.js",
+                        timer: this.timer || 60000
                     });
                 }],
                setScript: function (value) { 
                    this.script = typeof value === "string" ? value:"../bower_components/web-worker-rest-api/worker.js";
+               },
+               setTimer: function (value) { 
+                   this.timer = typeof value === "number" ? value:60000;
                }  
             };
 
@@ -33,6 +38,7 @@
             var workerScript = webWorkerConfig.script;
             var worker = new Worker(workerScript);
             callWebWorker.setWorker(worker);
+            callWebWorker.startWorker({config:{timer:webWorkerConfig.timer}});
 
         }]).factory('callWebWorker', ['$rootScope','$q','$log','webWorkerConfig',function($rootScope,$q,$log,webWorkerConfig) {
             $log.info("callWebWorker");
@@ -49,7 +55,7 @@
                 $log.info("setWorker");
                 workerSingleton = worker;
                 workerSingleton.onmessage = function(e) {
-                    $log.debug("Response from web worker: ",e);
+                    $log.info("Response from web worker: ",e);
                     if(e.data.hasOwnProperty("success")){
                         $rootScope.$broadcast(e.data.endpoint.event.success, e.data);
                         
@@ -74,7 +80,7 @@
                     });
                 }
                 workerQueue.push(data);
-                $log.debug("On queue: ",workerQueue);
+                $log.info("On queue: ",workerQueue);
             }
             
             function removeFromRefreshQueue(id){

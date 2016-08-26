@@ -45,6 +45,14 @@
             var workerSingleton;
             var workerQueue = [];
             
+            function setConfigWorker(config){
+                $log.info("setConfigWorker");
+                //{timer:time}
+                var workerReq = {config:config};
+                workerSingleton.postMessage(workerReq);
+
+            }
+
             function startWorker(workerRequest){
                 $log.info("startWorker");
                 workerSingleton.postMessage(workerRequest);
@@ -98,7 +106,9 @@
             
             return {
                 startWorker:startWorker,
+                setConfigWorker:setConfigWorker,
                 setWorker: setWorker,
+                invokeFromQueue: invokeFromQueue,
                 addToRefreshQueue: addToRefreshQueue,
                 removeFromRefreshQueue: removeFromRefreshQueue
             };

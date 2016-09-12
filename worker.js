@@ -1,4 +1,5 @@
 importScripts('lodash.min.js');
+importScripts('lz-string.min.js');
 
 //Event Listener for message from the main thread
 this.onmessage = function (e) {
@@ -6,12 +7,16 @@ this.onmessage = function (e) {
     
     //Variable to handle the request from main thread
     var requestWorker = e.data;
-    if(e.data.hasOwnProperty('config')){
+    if(requestWorker.hasOwnProperty('config')){
         //Interval for Queued Calls        
         setInterval(function(){ 
             var message = {message: 'from_queue'};
             self.postMessage(message); 
-        }, e.data.config.timer);
+        }, requestWorker.config.timer);
+
+    }else if(requestWorker.hasOwnProperty('lz_string')){  
+        lzString(requestWorker.lz_string);
+
     }else{
         getDataFromURL(requestWorker);
     }
@@ -66,4 +71,13 @@ function getDataFromURL(request) {
             }
         });
     });  
+}
+
+function lzString(request) {
+    var message = {message: 'storage'};
+    if(request.method === 'compress'){
+        request.result = request.value;//LZString.compress(JSON.stringify(request.value));
+    }
+    message.data = request;
+    postMessage(message);
 }

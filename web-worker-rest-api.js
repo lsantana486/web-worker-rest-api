@@ -40,7 +40,7 @@
             callWebWorker.setWorker(worker);
             callWebWorker.startWorker({config:{timer:webWorkerConfig.timer}});
 
-        }]).factory('callWebWorker', ['$rootScope','$q','$log','webWorkerConfig',function($rootScope,$q,$log,webWorkerConfig) {
+        }]).factory('callWebWorker', ['$rootScope','$q','$log','webWorkerConfig','localStorageService',function($rootScope,$q,$log,webWorkerConfig,localStorageService) {
             $log.info("callWebWorker");
             var workerSingleton;
             var workerQueue = [];
@@ -68,8 +68,11 @@
                         $rootScope.$broadcast(e.data.endpoint.event.success, e.data);
                         
                     }else if(e.data.hasOwnProperty("message")){
-                        if(e.data.message == "from_queue")
+                        if(e.data.message == "from_queue"){
                             invokeFromQueue();
+                        }else if(e.data.message == "storage"){
+                            saveToCache(e.data.data.storage.key,e.data.data.result,e.data.data.storage.type,e.data.data.event);
+                        }
                             
                     }else if(e.data.hasOwnProperty("error")){
                         $rootScope.$broadcast(e.data.endpoint.event.error, e.data);
@@ -102,6 +105,12 @@
             function invokeFromQueue(){
                 $log.info("invokeFromQueue");
                 startWorker(workerQueue);
+            }
+
+            function saveToCache(key,value,storage,event){
+                $log.info("saveToCache");
+                localStorageService.set(key, value, storage);
+                $rootScope.$emit(event.success,{key:key,storage:storage});
             }
             
             return {

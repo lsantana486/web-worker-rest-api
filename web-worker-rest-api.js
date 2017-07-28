@@ -65,7 +65,11 @@
                 workerSingleton.onmessage = function(e) {
                     $log.info("Response from web worker: ",e);
                     if(e.data.hasOwnProperty("success")){
-                        $rootScope.$broadcast(e.data.endpoint.event.success, e.data);
+                        if(e.data.endpoint.hasOwnProperty("storage")){
+                            saveToCache(e.data.endpoint.storage.key, e.data, e.data.endpoint.storage.type, e.data.endpoint.event);
+                        }else{
+                            $rootScope.$broadcast(e.data.endpoint.event.success, e.data);
+                        }
                         
                     }else if(e.data.hasOwnProperty("message")){
                         if(e.data.message == "from_queue"){

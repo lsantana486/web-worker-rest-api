@@ -36,6 +36,9 @@ var HttpClient = function () {
         
             }else if(HttpRequest.readyState == 4 && HttpRequest.status == 0){
                 Callback('{\"status\":\"error\", \"message\":\"Backend Unavailable\"}');
+
+            }else if(HttpRequest.readyState == 4){
+                Callback(HttpRequest.responseText);
             }              
         }        
         
@@ -76,7 +79,14 @@ function getDataFromURL(request) {
 function lzString(request) {
     var message = {message: 'storage'};
     if(request.method === 'compress'){
-        request.result = request.value;//LZString.compress(JSON.stringify(request.value));
+        // begin:develop
+        request.result = request.value;
+        // end:develop
+
+        /* begin:build
+        request.result = LZString.compress(JSON.stringify(request.value));
+        request.storage.key = LZString.compress(request.storage.key);
+        end:build */
     }
     message.data = request;
     postMessage(message);

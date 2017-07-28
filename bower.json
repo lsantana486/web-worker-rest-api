@@ -1,6 +1,6 @@
 {
   "name": "web-worker-rest-api",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Web worker for request to apis",
   "keywords": [
     "webworkers"
